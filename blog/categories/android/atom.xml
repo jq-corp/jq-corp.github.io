@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Android | JQ Engineer Blog]]></title>
+  <link href="http://jq-corp.github.io/blog/categories/android/atom.xml" rel="self"/>
+  <link href="http://jq-corp.github.io/"/>
+  <updated>2015-07-30T11:16:20+09:00</updated>
+  <id>http://jq-corp.github.io/</id>
+  <author>
+    <name><![CDATA[JQ Co., Ltd.]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Nexus 6が届いた！]]></title>
+    <link href="http://jq-corp.github.io/blog/2015/07/30/bakana-first/"/>
+    <updated>2015-07-30T11:04:36+09:00</updated>
+    <id>http://jq-corp.github.io/blog/2015/07/30/bakana-first</id>
+    <content type="html"><![CDATA[<p><img src="/images/nexus6_20150730.JPG"></p>
+
+<p>発注から2日後、届きました。</p>
+]]></content>
+  </entry>
+  
+</feed>
