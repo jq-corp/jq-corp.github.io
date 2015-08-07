@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>行動ログ解析基盤の構築 - JQ Engineer Blog</title>
+  <meta name="author" content="JQ Co., Ltd.">
+
+  
+  <meta name="description" content="行動ログ解析基盤とは 「行動ログ解析基盤」を「自分たちが行った施策の結果を簡単に見ることができる基盤、ツール」と定義 代表的な行動ログ取得手法 Google Analytics ページ全体のアクセス解析
+コホート分析が可能 Mixpanel GAの行動-> &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jq-corp.github.io/blog/2015/07/30/event-analysis/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="JQ Engineer Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">JQ Engineer Blog</a></h1>
+  
+    <h2>Pain is temporary. It may last a minute, or an hour, or a day, or a year, but eventually it will subside and something else will take its place. If I quit, however, it lasts forever.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jq-corp.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">行動ログ解析基盤の構築</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-07-30T11:50:23+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:50 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>行動ログ解析基盤とは</h2>
+
+<ul>
+<li>「行動ログ解析基盤」を「自分たちが行った施策の結果を簡単に見ることができる基盤、ツール」と定義</li>
+</ul>
+
+
+<h2>代表的な行動ログ取得手法</h2>
+
+<ul>
+<li>Google Analytics
+
+<ul>
+<li>ページ全体のアクセス解析</li>
+<li>コホート分析が可能</li>
+</ul>
+</li>
+<li>Mixpanel
+
+<ul>
+<li>GAの行動->イベントに特化したサービスである特定のイベントを解析するのに便利</li>
+<li>コホート分析が可能</li>
+</ul>
+</li>
+<li>サーバーのアクセスログ/DBのSQLをダンプ
+
+<ul>
+<li>fluentdでログを加工、Hadoop(Hive)やTreasure Dataに保存して解析</li>
+<li>要件に合わせてなんでも可能だが、基盤構築が必要</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>分析したいこと(コホート分析)</h2>
+
+<ul>
+<li>一般的に言われているコホート分析は、サービスを使っている人のユーザ属性を定義し、その割合を表示します。</li>
+<li>５つの属性に分けてサービスについてどのような意識で接しているのかを定義します。
+
+<ul>
+<li>Acquisition(潜在的ユーザ）</li>
+<li>Activation（何らかのポジティブな動作を行った）</li>
+<li>Retention（戻ってきた）</li>
+<li>Revenue（価値ある行動を生んだ）</li>
+<li>Referral（それを他人に広めた）</li>
+</ul>
+</li>
+<li>以下の様なグラフが欲しい
+
+<ul>
+<li>5つの属性の行動が時系列でどう変化したのかを把握すること</li>
+<li>縦軸は%である必要はない</li>
+</ul>
+</li>
+</ul>
+
+
+<p><img src="http://hivecolor.com/img/id/98/cohort_606_365.png" alt="cohort_606_365.png (606×365)" /></p>
+
+<p><a href="http://ascii.jp/elem/000/000/992/992442/">ASCII.jp：Googleアナリティクスで手軽にできる「コホート分析」とは｜Google アナリティクスで実践！コホート分析</a></p>
+
+<p><a href="http://diamond.jp/articles/-/25607">「身の回り」データからの発想(1)～コホート分析で読めない未来を読め｜三谷流構造的やわらか発想法｜ダイヤモンド・オンライン</a></p>
+
+<p><a href="http://hivecolor.com/id/98">コホート分析とは - Hive Color</a></p>
+
+<h2>実現方法</h2>
+
+<h3>GAにおけるコホート分析の利用</h3>
+
+<ul>
+<li>GAのコホート分析を駆使すると、自社ホームページに訪れたユーザーの定着率を計測することができるため、リピーター獲得施策を考えるうえで非常に有用です。</li>
+<li>さらに、指標として収益や目標の完了数を設定すれば、何度接触した人が、どのタイミングで購入に至っているのか・どれくらいの収益に貢献しているのかを見ることが出来ます。</li>
+<li>縦軸が訪問ユーザー数を表し、横軸が訪問したユーザーの再訪率を表しています。</li>
+<li>上のようなコホート分析の図を一発で出すことはできない</li>
+</ul>
+
+
+<p><a href="http://www.e-agency.co.jp/column/20150213.html">Googleアナリティクスのコホート分析を使って分析してみました。│株式会社イー･エージェンシー</a></p>
+
+<h3>Mixpanelにおけるコホート分析の利用</h3>
+
+<ul>
+<li>基本的にGAのコホート分析と同様の機能</li>
+<li>同様に、上のようなコホート分析の図を一発で出すことはできない</li>
+</ul>
+
+
+<h3>行動ログ基盤の自作</h3>
+
+<h4>Mixpanelの活用</h4>
+
+<ul>
+<li>Mixpanelは、ユーザーの行動をイベントとしてトラッキングすることができる</li>
+<li>コホート分析の対象となるイベントをサーバーサイドに埋め込むことで行動ログを簡単に習得できる</li>
+<li>優れた分析機能があらかじめ用意されている</li>
+<li>Mixpanelは、API経由で、ログを取得できるため、上図のようなコホート分析のグラフを描画する実装をすれば、表示可能</li>
+</ul>
+
+
+<p><a href="http://blog.tsumikiinc.com/article/20141114_mixpanel.html">最強のグロースハックツール &ldquo;Mixpanel&rdquo; 導入レポート | グロースハック | つみきブログ</a></p>
+
+<p><a href="http://www.cherry-pick.jp/blog/web-service/how-to-use-mixpanel.php">解析嫌いなあなたを震わす！簡単&amp;便利なMixpanelを使おう！ | cherry-pick BLOG</a></p>
+
+<p><a href="http://kitak.hatenablog.jp/entry/2014/10/07/231003">Rubyでmixpanelのイベントをtrackしたり、データをexportする術 - kitak.blog</a></p>
+
+<p><a href="https://github.com/doorkeeper/event_tracker">doorkeeper/event_tracker</a></p>
+
+<p><a href="http://madewithenvy.com/ecosystem/articles/2013/mixpanel-analytics-with-ruby/">Mixpanel Analytics with Ruby :: Envy</a></p>
+
+<h4>自作</h4>
+
+<ul>
+<li><code>ahoy</code>というイベントトラッキングのためのgemがあるので、これを活用することも可能</li>
+<li>この場合は、アプリケーションのDBにイベントを保存していくことになる</li>
+<li>Mixpanelが提供するような分析機能も自作しないといけないが、APIとの連携部分の構築は不要なのが、メリット</li>
+</ul>
+
+
+<p><a href="http://qiita.com/kakipo/items/e2f857f64abe973a29ab">Rails - Ahoy でらくらくイベントトラッキング - Qiita</a></p>
+
+<h2>Refs.</h2>
+
+<p><a href="http://hivecolor.com/id/105">行動ログ解析基盤の作り方 - Hive Color</a></p>
+
+<p><a href="http://blog.happyelements.co.jp/2013/03/fluentmongodb.html">Happy Elements Labs: fluentdとMongoDBでユーザー行動を見える化</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">JQ Co., Ltd.</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-07-30T11:50:23+09:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:50 am</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/analytics/'>analytics</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jq-corp.github.io/blog/2015/07/30/event-analysis/" data-via="" data-counturl="http://jq-corp.github.io/blog/2015/07/30/event-analysis/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/30/markdown-how-to-use/" title="Previous Post: Markdownの書き方">&laquo; Markdownの書き方</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2015/08/06/bakana-image-trim/" title="Next Post: 画像の中心を正方形にトリミングするJavascript">画像の中心を正方形にトリミングするJavascript &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/bakana-image-trim/">画像の中心を正方形にトリミングするJavascript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/event-analysis/">行動ログ解析基盤の構築</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/markdown-how-to-use/">Markdownの書き方</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/bakana-first/">Nexus 6が届いた！</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/react-rails/">ReactとRailsの関係性とサンプルアプリケーションのまとめ</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - JQ Co., Ltd. -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

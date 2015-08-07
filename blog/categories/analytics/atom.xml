@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Analytics | JQ Engineer Blog]]></title>
+  <link href="http://jq-corp.github.io/blog/categories/analytics/atom.xml" rel="self"/>
+  <link href="http://jq-corp.github.io/"/>
+  <updated>2015-08-07T10:07:59+09:00</updated>
+  <id>http://jq-corp.github.io/</id>
+  <author>
+    <name><![CDATA[JQ Co., Ltd.]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[行動ログ解析基盤の構築]]></title>
+    <link href="http://jq-corp.github.io/blog/2015/07/30/event-analysis/"/>
+    <updated>2015-07-30T11:50:23+09:00</updated>
+    <id>http://jq-corp.github.io/blog/2015/07/30/event-analysis</id>
+    <content type="html"><![CDATA[<h2>行動ログ解析基盤とは</h2>
+
+<ul>
+<li>「行動ログ解析基盤」を「自分たちが行った施策の結果を簡単に見ることができる基盤、ツール」と定義</li>
+</ul>
+
+
+<h2>代表的な行動ログ取得手法</h2>
+
+<ul>
+<li>Google Analytics
+
+<ul>
+<li>ページ全体のアクセス解析</li>
+<li>コホート分析が可能</li>
+</ul>
+</li>
+<li>Mixpanel
+
+<ul>
+<li>GAの行動->イベントに特化したサービスである特定のイベントを解析するのに便利</li>
+<li>コホート分析が可能</li>
+</ul>
+</li>
+<li>サーバーのアクセスログ/DBのSQLをダンプ
+
+<ul>
+<li>fluentdでログを加工、Hadoop(Hive)やTreasure Dataに保存して解析</li>
+<li>要件に合わせてなんでも可能だが、基盤構築が必要</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>分析したいこと(コホート分析)</h2>
+
+<ul>
+<li>一般的に言われているコホート分析は、サービスを使っている人のユーザ属性を定義し、その割合を表示します。</li>
+<li>５つの属性に分けてサービスについてどのような意識で接しているのかを定義します。
+
+<ul>
+<li>Acquisition(潜在的ユーザ）</li>
+<li>Activation（何らかのポジティブな動作を行った）</li>
+<li>Retention（戻ってきた）</li>
+<li>Revenue（価値ある行動を生んだ）</li>
+<li>Referral（それを他人に広めた）</li>
+</ul>
+</li>
+<li>以下の様なグラフが欲しい
+
+<ul>
+<li>5つの属性の行動が時系列でどう変化したのかを把握すること</li>
+<li>縦軸は%である必要はない</li>
+</ul>
+</li>
+</ul>
+
+
+<p><img src="http://hivecolor.com/img/id/98/cohort_606_365.png" alt="cohort_606_365.png (606×365)" /></p>
+
+<p><a href="http://ascii.jp/elem/000/000/992/992442/">ASCII.jp：Googleアナリティクスで手軽にできる「コホート分析」とは｜Google アナリティクスで実践！コホート分析</a></p>
+
+<p><a href="http://diamond.jp/articles/-/25607">「身の回り」データからの発想(1)～コホート分析で読めない未来を読め｜三谷流構造的やわらか発想法｜ダイヤモンド・オンライン</a></p>
+
+<p><a href="http://hivecolor.com/id/98">コホート分析とは - Hive Color</a></p>
+
+<h2>実現方法</h2>
+
+<h3>GAにおけるコホート分析の利用</h3>
+
+<ul>
+<li>GAのコホート分析を駆使すると、自社ホームページに訪れたユーザーの定着率を計測することができるため、リピーター獲得施策を考えるうえで非常に有用です。</li>
+<li>さらに、指標として収益や目標の完了数を設定すれば、何度接触した人が、どのタイミングで購入に至っているのか・どれくらいの収益に貢献しているのかを見ることが出来ます。</li>
+<li>縦軸が訪問ユーザー数を表し、横軸が訪問したユーザーの再訪率を表しています。</li>
+<li>上のようなコホート分析の図を一発で出すことはできない</li>
+</ul>
+
+
+<p><a href="http://www.e-agency.co.jp/column/20150213.html">Googleアナリティクスのコホート分析を使って分析してみました。│株式会社イー･エージェンシー</a></p>
+
+<h3>Mixpanelにおけるコホート分析の利用</h3>
+
+<ul>
+<li>基本的にGAのコホート分析と同様の機能</li>
+<li>同様に、上のようなコホート分析の図を一発で出すことはできない</li>
+</ul>
+
+
+<h3>行動ログ基盤の自作</h3>
+
+<h4>Mixpanelの活用</h4>
+
+<ul>
+<li>Mixpanelは、ユーザーの行動をイベントとしてトラッキングすることができる</li>
+<li>コホート分析の対象となるイベントをサーバーサイドに埋め込むことで行動ログを簡単に習得できる</li>
+<li>優れた分析機能があらかじめ用意されている</li>
+<li>Mixpanelは、API経由で、ログを取得できるため、上図のようなコホート分析のグラフを描画する実装をすれば、表示可能</li>
+</ul>
+
+
+<p><a href="http://blog.tsumikiinc.com/article/20141114_mixpanel.html">最強のグロースハックツール &ldquo;Mixpanel&rdquo; 導入レポート | グロースハック | つみきブログ</a></p>
+
+<p><a href="http://www.cherry-pick.jp/blog/web-service/how-to-use-mixpanel.php">解析嫌いなあなたを震わす！簡単&amp;便利なMixpanelを使おう！ | cherry-pick BLOG</a></p>
+
+<p><a href="http://kitak.hatenablog.jp/entry/2014/10/07/231003">Rubyでmixpanelのイベントをtrackしたり、データをexportする術 - kitak.blog</a></p>
+
+<p><a href="https://github.com/doorkeeper/event_tracker">doorkeeper/event_tracker</a></p>
+
+<p><a href="http://madewithenvy.com/ecosystem/articles/2013/mixpanel-analytics-with-ruby/">Mixpanel Analytics with Ruby :: Envy</a></p>
+
+<h4>自作</h4>
+
+<ul>
+<li><code>ahoy</code>というイベントトラッキングのためのgemがあるので、これを活用することも可能</li>
+<li>この場合は、アプリケーションのDBにイベントを保存していくことになる</li>
+<li>Mixpanelが提供するような分析機能も自作しないといけないが、APIとの連携部分の構築は不要なのが、メリット</li>
+</ul>
+
+
+<p><a href="http://qiita.com/kakipo/items/e2f857f64abe973a29ab">Rails - Ahoy でらくらくイベントトラッキング - Qiita</a></p>
+
+<h2>Refs.</h2>
+
+<p><a href="http://hivecolor.com/id/105">行動ログ解析基盤の作り方 - Hive Color</a></p>
+
+<p><a href="http://blog.happyelements.co.jp/2013/03/fluentmongodb.html">Happy Elements Labs: fluentdとMongoDBでユーザー行動を見える化</a></p>
+]]></content>
+  </entry>
+  
+</feed>

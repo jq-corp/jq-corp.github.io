@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jq-corp.github.io/blog/2015/08/06/bakana-image-trim/</loc>
+    <lastmod>2015-08-06T19:05:24+09:00</lastmod>
+  </url>
+  <url>
+    <loc>http://jq-corp.github.io/blog/2015/07/30/event-analysis/</loc>
+    <lastmod>2015-07-30T11:50:23+09:00</lastmod>
+  </url>
+  <url>
+    <loc>http://jq-corp.github.io/blog/2015/07/30/markdown-how-to-use/</loc>
+    <lastmod>2015-07-30T11:19:58+09:00</lastmod>
+  </url>
+  <url>
     <loc>http://jq-corp.github.io/blog/2015/07/30/bakana-first/</loc>
     <lastmod>2015-07-30T11:04:36+09:00</lastmod>
   </url>
@@ -25,5 +37,14 @@
   </url>
   <url>
     <loc>http://jq-corp.github.io/blog/categories/nexus6/</loc>
+  </url>
+  <url>
+    <loc>http://jq-corp.github.io/blog/categories/markdown/</loc>
+  </url>
+  <url>
+    <loc>http://jq-corp.github.io/blog/categories/analytics/</loc>
+  </url>
+  <url>
+    <loc>http://jq-corp.github.io/blog/categories/javascript-jquery-hua-xiang-jia-gong/</loc>
   </url>
 </urlset>

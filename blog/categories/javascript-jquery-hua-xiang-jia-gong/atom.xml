@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Javascript,jquery,画像加工 | JQ Engineer Blog]]></title>
+  <link href="http://jq-corp.github.io/blog/categories/javascript-jquery-hua-xiang-jia-gong/atom.xml" rel="self"/>
+  <link href="http://jq-corp.github.io/"/>
+  <updated>2015-08-07T10:07:59+09:00</updated>
+  <id>http://jq-corp.github.io/</id>
+  <author>
+    <name><![CDATA[JQ Co., Ltd.]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[画像の中心を正方形にトリミングするJavascript]]></title>
+    <link href="http://jq-corp.github.io/blog/2015/08/06/bakana-image-trim/"/>
+    <updated>2015-08-06T19:05:24+09:00</updated>
+    <id>http://jq-corp.github.io/blog/2015/08/06/bakana-image-trim</id>
+    <content type="html"><![CDATA[<p>正確にはトリミングしたように見せるスクリプトです。
+必要となった要件は以下の通り。</p>
+
+<ul>
+<li>横長、縦長画像に対応させる
+
+<ul>
+<li>横長の場合は、左右は中心位置を取り、上下は目一杯表示する</li>
+<li>縦長の場合は、その逆</li>
+</ul>
+</li>
+<li>指定のclassを付けるだけで動く
+
+<ul>
+<li>複数の画面で動かす予定があったため、発火条件を単純にする</li>
+</ul>
+</li>
+</ul>
+
+
+<p>まず、htmlの準備をします。</p>
+
+<pre><code>&lt;body&gt;
+    &lt;div class="photo"&gt;
+        &lt;img class="trimImg" src="xxx.jpg"&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+</code></pre>
+
+<p>要点としては、トリミングしたいimgを囲うdivを用意することのみです。
+正方形にする画像は<code>.trimImg</code>が付いているものです。
+次に、css。</p>
+
+<pre><code>.photo {
+    position:relative;
+  overflow: hidden;
+}
+
+.photo img{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+.img-responsive {
+    display: block;
+  max-width: 100%;
+  height: auto;
+}
+</code></pre>
+
+<p>imgは<code>position:absolute</code>にして、親要素を<code>position:relative</code>にすることで様々な場所で使いやすくかと思います。
+imgが<code>position:absolute</code>なのは、中心位置を取るためです。
+最後にjsです。</p>
+
+<pre><code>$(function(){
+    function GetImageSize(){
+    $('.trimImg').load(function(){
+      target = $(this);
+      parentwidth = target.parent().width();
+      parentheight = target.parent().height();
+      target.parent().css("height",parentwidth);
+      targetwidth = target.width();
+      targetheight = target.height();
+      if(targetheight &lt; targetwidth){
+        targetleft = -(targetwidth/targetheight*parentwidth-parentwidth)/2;
+        target.css({
+          height: parentwidth,
+          width: "auto",
+          left: targetleft
+        });
+      } else if(targetheight &gt; targetwidth){
+        targettop = -(targetheight/targetwidth*parentheight-parentheight)/2;
+        target.css({
+          height: "auto",
+          width: parentheight,
+          top: targettop
+        });
+      } else {
+        target.addClass('img-responsive');
+      }
+    });
+    }
+    GetImageSize();
+});
+</code></pre>
+
+<p>流れとしては、</p>
+
+<ol>
+<li>htmlで指定した<code>.trimImg</code>を取得</li>
+<li>画像自体と親要素の高さ、幅を取得</li>
+<li>画像の高さと幅を比較して、横長か縦長か画像の形を判別</li>
+<li>画像の形に合わせて、中心位置を計算</li>
+<li>画像にスタイルを当てる</li>
+</ol>
+
+
+<p>といったことをしています。
+また、高さと幅が同じ場合には別のクラスを付けています。（bootstrapのものそのままです）</p>
+
+<p>最初の部分で<code>.load()</code>を使い、画像読み込みが完了するのを待たせることで
+高さや幅の取得ミスを防止しているのが、ほんの少しの工夫です。</p>
+
+<p>以上</p>
+]]></content>
+  </entry>
+  
+</feed>

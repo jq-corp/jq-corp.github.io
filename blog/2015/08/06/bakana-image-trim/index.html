@@ -1,0 +1,364 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>画像の中心を正方形にトリミングするJavascript - JQ Engineer Blog</title>
+  <meta name="author" content="JQ Co., Ltd.">
+
+  
+  <meta name="description" content="正確にはトリミングしたように見せるスクリプトです。
+必要となった要件は以下の通り。 横長、縦長画像に対応させる 横長の場合は、左右は中心位置を取り、上下は目一杯表示する
+縦長の場合は、その逆 指定のclassを付けるだけで動く 複数の画面で動かす予定があったため、発火条件を単純にする まず、 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jq-corp.github.io/blog/2015/08/06/bakana-image-trim/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="JQ Engineer Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">JQ Engineer Blog</a></h1>
+  
+    <h2>Pain is temporary. It may last a minute, or an hour, or a day, or a year, but eventually it will subside and something else will take its place. If I quit, however, it lasts forever.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="jq-corp.github.io">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">画像の中心を正方形にトリミングするJavascript</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-08-06T19:05:24+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:05 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>正確にはトリミングしたように見せるスクリプトです。
+必要となった要件は以下の通り。</p>
+
+<ul>
+<li>横長、縦長画像に対応させる
+
+<ul>
+<li>横長の場合は、左右は中心位置を取り、上下は目一杯表示する</li>
+<li>縦長の場合は、その逆</li>
+</ul>
+</li>
+<li>指定のclassを付けるだけで動く
+
+<ul>
+<li>複数の画面で動かす予定があったため、発火条件を単純にする</li>
+</ul>
+</li>
+</ul>
+
+
+<p>まず、htmlの準備をします。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;body&gt;
+</span><span class='line'>  &lt;div class="photo"&gt;
+</span><span class='line'>      &lt;img class="trimImg" src="xxx.jpg"&gt;
+</span><span class='line'>  &lt;/div&gt;
+</span><span class='line'>&lt;/body&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>要点としては、トリミングしたいimgを囲うdivを用意することのみです。
+正方形にする画像は<code>.trimImg</code>が付いているものです。
+次に、css。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.photo {
+</span><span class='line'>  position:relative;
+</span><span class='line'>  overflow: hidden;
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>.photo img{
+</span><span class='line'>  position: absolute;
+</span><span class='line'>  top: 0;
+</span><span class='line'>  right: 0;
+</span><span class='line'>  bottom: 0;
+</span><span class='line'>  left: 0;
+</span><span class='line'>  margin: auto;
+</span><span class='line'>}
+</span><span class='line'>.img-responsive {
+</span><span class='line'>  display: block;
+</span><span class='line'>  max-width: 100%;
+</span><span class='line'>  height: auto;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>imgは<code>position:absolute</code>にして、親要素を<code>position:relative</code>にすることで様々な場所で使いやすくかと思います。
+imgが<code>position:absolute</code>なのは、中心位置を取るためです。
+最後にjsです。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$(function(){
+</span><span class='line'>  function GetImageSize(){
+</span><span class='line'>    $('.trimImg').load(function(){
+</span><span class='line'>      target = $(this);
+</span><span class='line'>      parentwidth = target.parent().width();
+</span><span class='line'>      parentheight = target.parent().height();
+</span><span class='line'>      target.parent().css("height",parentwidth);
+</span><span class='line'>      targetwidth = target.width();
+</span><span class='line'>      targetheight = target.height();
+</span><span class='line'>      if(targetheight &lt; targetwidth){
+</span><span class='line'>        targetleft = -(targetwidth/targetheight*parentwidth-parentwidth)/2;
+</span><span class='line'>        target.css({
+</span><span class='line'>          height: parentwidth,
+</span><span class='line'>          width: "auto",
+</span><span class='line'>          left: targetleft
+</span><span class='line'>        });
+</span><span class='line'>      } else if(targetheight &gt; targetwidth){
+</span><span class='line'>        targettop = -(targetheight/targetwidth*parentheight-parentheight)/2;
+</span><span class='line'>        target.css({
+</span><span class='line'>          height: "auto",
+</span><span class='line'>          width: parentheight,
+</span><span class='line'>          top: targettop
+</span><span class='line'>        });
+</span><span class='line'>      } else {
+</span><span class='line'>        target.addClass('img-responsive');
+</span><span class='line'>      }
+</span><span class='line'>      });
+</span><span class='line'>  }
+</span><span class='line'>  GetImageSize();
+</span><span class='line'>});</span></code></pre></td></tr></table></div></figure>
+
+
+<p>流れとしては、</p>
+
+<ol>
+<li>htmlで指定した<code>.trimImg</code>を取得</li>
+<li>画像自体と親要素の高さ、幅を取得</li>
+<li>画像の高さと幅を比較して、横長か縦長か画像の形を判別</li>
+<li>画像の形に合わせて、中心位置を計算</li>
+<li>画像にスタイルを当てる</li>
+</ol>
+
+
+<p>といったことをしています。
+また、高さと幅が同じ場合には別のクラスを付けています。（bootstrapのものそのままです）</p>
+
+<p>最初の部分で<code>.load()</code>を使い、画像読み込みが完了するのを待たせることで
+高さや幅の取得ミスを防止しているのが、ほんの少しの工夫です。</p>
+
+<p>以上</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">JQ Co., Ltd.</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-08-06T19:05:24+09:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>7:05 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/javascript-jquery-hua-xiang-jia-gong/'>javascript,jquery,画像加工</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jq-corp.github.io/blog/2015/08/06/bakana-image-trim/" data-via="" data-counturl="http://jq-corp.github.io/blog/2015/08/06/bakana-image-trim/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/07/30/event-analysis/" title="Previous Post: 行動ログ解析基盤の構築">&laquo; 行動ログ解析基盤の構築</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/08/06/bakana-image-trim/">画像の中心を正方形にトリミングするJavascript</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/event-analysis/">行動ログ解析基盤の構築</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/markdown-how-to-use/">Markdownの書き方</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/bakana-first/">Nexus 6が届いた！</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/07/30/react-rails/">ReactとRailsの関係性とサンプルアプリケーションのまとめ</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - JQ Co., Ltd. -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

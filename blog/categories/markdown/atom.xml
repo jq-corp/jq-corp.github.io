@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Markdown | JQ Engineer Blog]]></title>
+  <link href="http://jq-corp.github.io/blog/categories/markdown/atom.xml" rel="self"/>
+  <link href="http://jq-corp.github.io/"/>
+  <updated>2015-08-07T10:07:59+09:00</updated>
+  <id>http://jq-corp.github.io/</id>
+  <author>
+    <name><![CDATA[JQ Co., Ltd.]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Markdownの書き方]]></title>
+    <link href="http://jq-corp.github.io/blog/2015/07/30/markdown-how-to-use/"/>
+    <updated>2015-07-30T11:19:58+09:00</updated>
+    <id>http://jq-corp.github.io/blog/2015/07/30/markdown-how-to-use</id>
+    <content type="html"><![CDATA[<h2>見出し</h2>
+
+<pre><code># h1
+## h2
+### h3
+#### h4
+##### h5
+###### h6
+</code></pre>
+
+<h2>文字装飾</h2>
+
+<pre><code>*イタリック*
+**重要**
+~~取り消し線~~
+</code></pre>
+
+<h2>水平線</h2>
+
+<pre><code>*** 水平線
+</code></pre>
+
+<h2>リスト</h2>
+
+<pre><code>- リスト項目
+</code></pre>
+
+<h2>コード記述</h2>
+
+<p>ソース：`一部コードにする場合`<br/>
+プレビュー：<code>一部コードにする場合</code></p>
+
+<p>ソース：全体をコードにする場合<br/>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ソースコードをここに書く</span></code></pre></td></tr></table></div></figure></p>
+
+<p>プレビュー：
+<code>
+ソースコードをここに書く
+</code></p>
+
+<h2>リンク</h2>
+
+<pre><code>[テキスト](URL)
+</code></pre>
+
+<h2>画像</h2>
+
+<pre><code>![代替テキスト](画像のURL)
+</code></pre>
+
+<p>例えば<br/>
+<code>![JQロゴ](http://www.j-q.co.jp/images/jq_logo.png)</code><br/>
+このようになる</p>
+
+<h2>参考サイト</h2>
+
+<p><a href="http://qiita.com/tbpgr/items/989c6badefff69377da7">Markdown記法 サンプル集</a></p>
+]]></content>
+  </entry>
+  
+</feed>
